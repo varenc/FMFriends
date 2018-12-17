@@ -1,14 +1,14 @@
 # FMFriends
 
-[![Build Status](https://travis-ci.org/Coronon/FMFriends.svg?branch=master)](https://travis-ci.org/Coronon/fmfriends)
+[![Build Status](https://travis-ci.org/Coronon/FMFriends.svg?branch=master)](https://travis-ci.org/Coronon/FMFriends)
 
-FMFriends is an API for icloud.com that enables easy Find-My-Friends location quarrys with contact names or ids and is powered by the fantastic [requests] library. It saves all locations in a database by default for later use.
+FMFriends is an API for icloud.com that enables easy Find-My-Friends location quarries with contact names or ids and is powered by the fantastic [requests] library. It saves all locations in a database by default for later use.
 
-# Authentication
+## Authentication
 
-At the moment this API only works with icloud accounts that have **2FA enabled**, the 2FA code must be supplied at runtime. iStalk will reuse an older authentication if possible, therefore you dont need to 2FAuthenticate every time.
+At the moment this API only works with iCloud accounts that have **2FA enabled**, the 2FA code must be supplied at runtime. FMFriends will reuse an older authentication if possible, therefore you don't need to 2FAuthenticate every time.
 
-Authentication works as follows and returns an FMF object that holds the functionality of this api.
+Authentication works as follows and returns an FMF object that holds the functionality of this API.
 
 ```py
 api = FMF('email', 'password')
@@ -22,13 +22,13 @@ api.test_auth()
 ```
 
 &nbsp;
-You can also reauthenticate using the credentials used when creating the api with:
+You can also re-authenticate using the credentials used when creating the API with:
 
 ```py
 api.authentictae()
 ```
 
-# Usage
+## Usage
 
 After getting an FMF object the following functions can be called:
 
@@ -49,7 +49,7 @@ api.getContactsID()
 api.getContactsName()
 ```
 
-These will return a list and a dictionary with Names:IDs respectivley.
+These will return a list and a dictionary with Names/IDs respectively.
 
 #### Enviroment functions
 
@@ -66,12 +66,12 @@ These will save/load the current login data into/from the database 'FMFriends.db
 api.requestFMFData()
 ```
 
-This will return a raw json response from the FMF refresh action call.
+This will return a raw JSON response from the FMF refresh action call.
 
-# Installation
+## Installation
 
 ```py
-pip install FMFriends
+pip install fmfriends
 ```
 
 ## License

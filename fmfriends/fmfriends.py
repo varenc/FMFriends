@@ -332,6 +332,7 @@ class FMF():
 
     def _setLocations(self, Id, database):
         data = self.requestFMFData()
+        self.locations = {}
         ntime = int(time())
         now = datetime.datetime.now()
         for person in data['locations']:
@@ -364,21 +365,40 @@ class FMF():
         session = self.Session()
         data = self.locations
         for Id in Ids:
-            person = data[Id]
-            loc = self.location()
-            loc.user_id = session.query(self.users).filter(self.users.cid == Id).first().id
-            loc.time = person['time']['ntime']
-            loc.loctime = person['time']['loctime']
-            loc.lati = person['lati']
-            loc.long = person['long']
-            loc.year = person['time']['year']
-            loc.month = person['time']['month']
-            loc.day = person['time']['day']
-            loc.hour = person['time']['hour']
-            loc.minute = person['time']['minute']
-            loc.found = person['found']
-            session.add(loc)
-            session.commit()
+            try:
+                person = data[Id]
+                loc = self.location()
+                loc.user_id = session.query(self.users).filter(self.users.cid == Id).first().id
+                loc.time = person['time']['ntime']
+                loc.loctime = person['time']['loctime']
+                loc.lati = person['lati']
+                loc.long = person['long']
+                loc.year = person['time']['year']
+                loc.month = person['time']['month']
+                loc.day = person['time']['day']
+                loc.hour = person['time']['hour']
+                loc.minute = person['time']['minute']
+                loc.found = person['found']
+                session.add(loc)
+                session.commit()
+            except:
+                ntime = int(time())
+                now = datetime.datetime.now()
+                loc = self.location()
+                loc.user_id = session.query(self.users).filter(self.users.cid == Id).first().id
+                loc.time = time()
+                loc.loctime = 0
+                loc.lati = 0
+                loc.long = 0
+                loc.year = now.year
+                loc.month = now.month
+                loc.day = now.day
+                loc.hour = now.hour
+                loc.minute = now.minute
+                loc.found = False
+                session.add(loc)
+                session.commit()
+                self.locations[Id] = {'time': {'ntime': ntime, 'loctime': 0, 'year' : now.year, 'month' : now.month, 'day' : now.day, 'hour' : now.hour, 'minute' : now.minute}, 'lati': 0, 'long': 0, 'found': False}
         session.close()
 
     def getContactsID(self):
