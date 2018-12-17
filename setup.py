@@ -8,7 +8,7 @@ setup(
     author='Rubin Raithel',
     author_email='dev@rubinraithel.info',
     url='https://github.com/Coronon/FMFriends',
-    download_url='https://github.com/user/Coronon/FMFriends/v_01.tar.gz',
+    download_url='https://github.com/Coronon/FMFriends/archive/v_01.tar.gz',
     keywords=['API', 'Apple', 'iCloud', 'FMF', 'FindMyFriends', 'Friends'],
     install_requires=[
         'requests',
