@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
     name='fmfriends',
     packages=['fmfriends'],
-    version='0.1',
+    version='0.1.1',
     license='MIT',
     description='An API for Find-My-Friends from iCloud.com',
     author='Rubin Raithel',
@@ -15,7 +15,6 @@ setup(
         'uuid',
         'datetime',
         'sqlalchemy',
-        'ast'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',

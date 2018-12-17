@@ -11,7 +11,7 @@ At the moment this API only works with iCloud accounts that have **2FA enabled**
 Authentication works as follows and returns an FMF object that holds the functionality of this API.
 
 ```py
-api = FMF('email', 'password')
+api = fmfriends.FMF('email', 'password')
 ```
 
 &nbsp;
@@ -72,6 +72,12 @@ This will return a raw JSON response from the FMF refresh action call.
 
 ```py
 pip install fmfriends
+```
+
+And then import with:
+
+```py
+import fmfriends
 ```
 
 ## License
