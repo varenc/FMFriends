@@ -1,7 +1,5 @@
 # FMFriends
 
-[![Build Status](https://travis-ci.org/Coronon/FMFriends.svg?branch=master)](https://travis-ci.org/Coronon/FMFriends)
-
 FMFriends is an API for icloud.com that enables easy Find-My-Friends location quarries with contact names or ids and is powered by the fantastic [requests] library. It saves all locations in a database by default for later use.
 
 ## Authentication
