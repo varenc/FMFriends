@@ -8,3 +8,5 @@ python:
   - '3.7-dev'
 install:
   - pip install fmfriends
+script:
+  - travis
