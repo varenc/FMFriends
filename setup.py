@@ -12,7 +12,6 @@ setup(
     keywords=['API', 'Apple', 'iCloud', 'FMF', 'FindMyFriends', 'Friends'],
     install_requires=[
         'requests',
-        'uuid',
         'datetime',
         'sqlalchemy',
     ],
