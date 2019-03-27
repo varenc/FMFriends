@@ -23,7 +23,7 @@ api.test_auth()
 You can also re-authenticate using the credentials used when creating the API with:
 
 ```py
-api.authentictae()
+api.authenticate()
 ```
 
 ## Usage
