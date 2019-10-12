@@ -1,0 +1,9 @@
+# IDE
+.vscode/
+test*
+
+# PyCache
+*.pyc
+
+# Database
+*.db

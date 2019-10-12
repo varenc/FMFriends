@@ -51,6 +51,13 @@ class FMF():
         minute = Column('minute', Integer)
         found = Column('found', Boolean)
 
+    class devices(Base):
+        __tablename__ = "devices"
+        id = Column("id", Integer, primary_key=True)
+        device_id = Column("device_id", String)
+        name = Column("name", String)
+        device_class = Column("class", String)
+
     engine = create_engine('sqlite:///FMFriends.db', pool_recycle=3600)
     Base.metadata.create_all(bind=engine)
     Session = sessionmaker(bind=engine)
@@ -76,6 +83,7 @@ class FMF():
         self.dsid = None
         self.idmsaEndPoint = "https://idmsa.apple.com"
         self.idmsaAuthEndPoint = "https://idmsa.apple.com/appleauth/auth"
+        self.fm_refresh = "https://p36-fmipweb.icloud.com:443/fmipservice/client/web/refreshClient"
         self.appleIdSessionId = None
         self.scnt = None
         self.authToken = None
@@ -219,7 +227,8 @@ class FMF():
             self.build_id, self.client_id, self.build_id)
 
         try:
-            r = requests.post(auth_url, headers=headers, json=data, cookies=self.cookies)
+            r = requests.post(auth_url, headers=headers,
+                              json=data, cookies=self.cookies)
         except Exception as e:
             raise FMFException("[FMF] Network error: " + str(e))
         auth_resp = r.json()
@@ -246,14 +255,14 @@ class FMF():
             self.build_id, self.client_id, self.build_id)
 
         try:
-            r = requests.post(auth_url, headers=headers, json=data, cookies=self.cookies)
+            r = requests.post(auth_url, headers=headers,
+                              json=data, cookies=self.cookies)
         except Exception as e:
             raise FMFException("[FMF] Network error: " + str(e))
         auth_resp = r.json()
         self.dsid = self._get_dsid(auth_resp)
         self.fmf_base_url = self._get_service_url(auth_resp, "fmf")
         self._saveCookies(r)
-
 
     # Save login data
     def saveEnv(self):
@@ -338,11 +347,27 @@ class FMF():
         for person in data['locations']:
             if person['id'] in Id:
                 if person['location'] is not None:
-                    self.locations[person['id']] = {'time': {'ntime' : ntime, 'loctime': person['location']['timestamp'], 'year' : now.year, 'month' : now.month, 'day' : now.day, 'hour' : now.hour, 'minute' : now.minute}, 'lati': person['location']['latitude'], 'long': person['location']['longitude'], 'found': True}
+                    self.locations[person['id']] = {'time': {'ntime': ntime, 'loctime': person['location']['timestamp'], 'year': now.year, 'month': now.month,
+                                                             'day': now.day, 'hour': now.hour, 'minute': now.minute}, 'lati': person['location']['latitude'], 'long': person['location']['longitude'], 'found': True}
                 else:
-                    self.locations[person['id']] = {'time': {'ntime': ntime, 'loctime': 0, 'year' : now.year, 'month' : now.month, 'day' : now.day, 'hour' : now.hour, 'minute' : now.minute}, 'lati': 0, 'long': 0, 'found': False}
+                    self.locations[person['id']] = {'time': {'ntime': ntime, 'loctime': 0, 'year': now.year, 'month': now.month,
+                                                             'day': now.day, 'hour': now.hour, 'minute': now.minute}, 'lati': 0, 'long': 0, 'found': False}
         if database:
             self._locationDatabaseInsert(Id)
+
+    def _setDevices(self, devices_dict):
+        session = self.Session()
+        for device in devices_dict:
+            # check whether device exists in database
+            if session.query(self.devices).filter(self.devices.device_id == device["id"]).first() is None:
+                # create new "device" instance
+                d = self.devices()
+                d.device_id = device["id"]
+                d.name = device["name"]
+                d.device_class = device["class"]
+                session.add(d)
+                session.commit()
+        session.close()
 
     def getLocationByID(self, Id, database=True):
         if type(Id) == str:
@@ -358,7 +383,8 @@ class FMF():
             name = [name]
         for person in name:
             if person not in self.contactNames:
-                raise FMFException("[FMF] Name not in friends list: " + str(person))
+                raise FMFException(
+                    "[FMF] Name not in friends list: " + str(person))
         return self.getLocationByID([self.contactNames[person] for person in name], database)
 
     def _locationDatabaseInsert(self, Ids):
@@ -368,7 +394,8 @@ class FMF():
             try:
                 person = data[Id]
                 loc = self.location()
-                loc.user_id = session.query(self.users).filter(self.users.cid == Id).first().id
+                loc.user_id = session.query(self.users).filter(
+                    self.users.cid == Id).first().id
                 loc.time = person['time']['ntime']
                 loc.loctime = person['time']['loctime']
                 loc.lati = person['lati']
@@ -385,7 +412,8 @@ class FMF():
                 ntime = int(time())
                 now = datetime.datetime.now()
                 loc = self.location()
-                loc.user_id = session.query(self.users).filter(self.users.cid == Id).first().id
+                loc.user_id = session.query(self.users).filter(
+                    self.users.cid == Id).first().id
                 loc.time = time()
                 loc.loctime = 0
                 loc.lati = 0
@@ -398,7 +426,8 @@ class FMF():
                 loc.found = False
                 session.add(loc)
                 session.commit()
-                self.locations[Id] = {'time': {'ntime': ntime, 'loctime': 0, 'year' : now.year, 'month' : now.month, 'day' : now.day, 'hour' : now.hour, 'minute' : now.minute}, 'lati': 0, 'long': 0, 'found': False}
+                self.locations[Id] = {'time': {'ntime': ntime, 'loctime': 0, 'year': now.year, 'month': now.month,
+                                               'day': now.day, 'hour': now.hour, 'minute': now.minute}, 'lati': 0, 'long': 0, 'found': False}
         session.close()
 
     def getContactsID(self):
@@ -406,3 +435,57 @@ class FMF():
 
     def getContactsName(self):
         return self.contactNames
+
+    # TODO: Add own location to FMFriends.db
+    def requestFindPhoneData(self):
+        data = {
+            'clientContext': {
+                'fmly': True,
+                'shouldLocate': True,
+                'selectedDevice': 'all',
+            }
+        }
+        headers = {
+            "Origin": "https://www.icloud.com",
+            "Referer": "https://www.icloud.com"
+        }
+        raw_url = "{0}/?clientBuildNumber={1}&clientId={2}&dsid={3}"
+        url = raw_url.format(self.fm_refresh, self.build_id,
+                             self.client_id, self.dsid)
+        r = requests.post(self.fm_refresh, headers=headers,
+                          json=data, cookies=self.cookies)
+        return r.json()
+
+     # returns all devices that are discoverable in find my phone
+
+    def get_FindPhone_devices(self):
+        findm_data = self.requestFindPhoneData()
+        devices = []
+        for content in findm_data["content"]:
+            d = {
+                "id": content["id"],
+                "name": content["name"],
+                "class": content["deviceClass"]
+            }
+            devices.append(d)
+        self._setDevices(devices)
+        return devices
+
+    def get_own_device_location(self, identifier):
+        """
+        location data of own device
+        identifier must be the unique device name as a String f.ex. "John's iPhone"
+        """
+        findm_data = self.requestFindMyData()
+        for device in findm_data["content"]:
+            if device["name"] == identifier:
+                #! API returns UNIX timestamp with too many digits at the end
+                #! This might be random or change in the next decades ;) so pls spend some further attention here
+                time_c = str(device["location"]["timeStamp"])[0:10]
+                location = {
+                    "time": int(time_c),
+                    "la": device["location"]["latitude"],
+                    "lo": device["location"]["longitude"]
+                }
+                return location
+        return FMFException("Could not find own device named '%s'" % identifier)
