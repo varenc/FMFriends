@@ -1,3 +1,17 @@
+# ⚠️ Deprecation warning ⚠️
+The current API of FMFriends will be deprecated within the coming weeks/months to make place for a completely new version/service.
+You may clone this repo now and do with it whatever the license permits, even after its deprecation.
+The current FMFriends codebase will not be available after the new major version is released, which may be provided under a different license.
+
+## Features coming up
+- Working session reuse (Log in once, use as often as you like)
+- Cleaner API
+- Better Database Integration with MongoDB or any other Database
+- Easier use of multiple accounts
+- More reliable and efficient code 
+
+
+
 # FMFriends
 
 FMFriends is an API for icloud.com that enables easy Find-My-Friends location quarries with contact names or ids and is powered by the fantastic [requests] library. It saves all locations in a database by default for later use.
