@@ -5,10 +5,13 @@ The current FMFriends codebase will not be available after the new major version
 
 ## Features coming up
 - Working session reuse (Log in once, use as often as you like)
+- Better 2FA mechanism (not using stdin)
 - Cleaner API
 - Better Database Integration with MongoDB or any other Database
 - Easier use of multiple accounts
-- More reliable and efficient code 
+- More reliable and efficient code (strongly typed)
+- Super extensive docs
+- Easy and intuitive data visualisation
 
 
 
